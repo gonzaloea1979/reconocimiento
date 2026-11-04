@@ -1,6 +1,25 @@
 # Terminal POS — entregas completas
 
-## Version actual: 1.0.2
+## Version actual: 1.0.3
+
+[Descargar ZIP completo 1.0.3](https://github.com/gonzaloea1979/reconocimiento/raw/refs/heads/main/Terminal_POS_1_0_3_Mejorado.zip)
+
+Conserva todas las correcciones anteriores y las mismas funciones comerciales.
+
+- Pantalla de Ventas y Compras redondean cada renglón igual que el servidor; evita diferencias con cantidades fraccionadas.
+- La vista del ticket cerrado utiliza los importes guardados. Cantidades acumuladas y vuelto usan aritmética decimal.
+- Formato de fechas ISO más rápido en historiales, conservando los formatos anteriores.
+
+Validación: **82 archivos de prueba aprobados**, 0 fallidos y 0 omitidos en Linux.
+Se compararon 12.000 precios, 1.000 renglones y 2.016 fechas. Los casos fraccionados también se comprobaron con la API, SQLite, ticket PDF, reportes y Excel.
+Carga sintética: 10.000 productos, 20.000 ventas y 60.000 renglones, sin errores HTTP.
+La comparación aislada del formato de fechas pasó de 3,519 a 1,246 ms por 1.000 conversiones; no representa la mejora de toda la aplicación ni garantiza tiempos en Windows.
+
+Incluye informes, pruebas y detalles en `MEJORAS_1_0_3.txt`, dentro del ZIP.
+Descomprimir en una carpeta nueva y probar con una copia de los datos. No recalcula operaciones históricas.
+**Incluye código y kit de compilación, no un EXE precompilado.** La ejecución, impresión y validación visual reales en Windows siguen pendientes.
+
+## Version anterior: 1.0.2
 
 [Descargar ZIP completo 1.0.2](https://github.com/gonzaloea1979/reconocimiento/raw/refs/heads/main/Terminal_POS_1_0_2_Mejorado.zip)
 
