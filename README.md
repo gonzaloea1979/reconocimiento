@@ -1,6 +1,26 @@
 # Terminal POS — entregas completas
 
-## Version actual: 1.0.4
+## Version actual: 1.0.5
+
+[Descargar ZIP completo 1.0.5](https://github.com/gonzaloea1979/reconocimiento/raw/refs/heads/main/Terminal_POS_1_0_5_Mejorado.zip)
+
+Mismas funciones comerciales y mismo código de aplicación que 1.0.4, con instalación/actualización revisadas:
+
+- Dependencias y herramientas de compilación con versiones exactas.
+- Instalador y arranque usan la misma `.venv`; compilación usa `.venv_build` separada.
+- Preparación local sin instalar ni consultar red cuando el entorno ya coincide con la entrega.
+- Se comprueba que Python pertenezca al entorno local; entornos incompletos se conservan y los errores impiden continuar al arranque.
+- Guías para actualizar en una carpeta nueva, desde un respaldo verificado y sin copiar `pos.db` en caliente.
+
+**86 archivos de prueba aprobados**, sin fallos ni omisiones, en una instalación limpia Linux/CPython 3.12. Segunda preparación runtime/build con red bloqueada: 0 intentos de conexión. Ensayo desde el código real 1.0.4: base, stock, deudas, caja, configuración, logo, tickets y clave conservados; instalación original intacta.
+
+Se resolvieron y descargaron los paquetes binarios Windows x64 para Python 3.10, 3.12 y 3.13. **Esto no prueba su ejecución en Windows.** El ZIP contiene código y kit, no un EXE precompilado. Instaladores `.bat`, compilación, arranque e impresión requieren validación allí.
+
+Para usar: extraer en una carpeta nueva; con Python 3.12 de 64 bits ejecutar `instalar_dependencias.bat` y después `ejecutar.bat`. La primera preparación necesita internet si faltan paquetes. Leer `MEJORAS_1_0_5.txt`, `INSTALAR_Y_ACTUALIZAR_SEGURO.txt` y `MIGRAR_DATOS_EXE.txt` antes de incorporar una copia de los datos.
+
+Se conserva la validación de referencias de 1.0.4: una base inconsistente puede impedir crear el respaldo e iniciar; no se repara automáticamente. Probar primero con una copia y mantener la instalación anterior.
+
+## Version anterior: 1.0.4
 
 [Descargar ZIP completo 1.0.4](https://github.com/gonzaloea1979/reconocimiento/raw/refs/heads/main/Terminal_POS_1_0_4_Mejorado.zip)
 
