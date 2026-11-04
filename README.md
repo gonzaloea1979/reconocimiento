@@ -1,6 +1,24 @@
 # Terminal POS — entregas completas
 
-## Version actual: 1.0.3
+## Version actual: 1.0.4
+
+[Descargar ZIP completo 1.0.4](https://github.com/gonzaloea1979/reconocimiento/raw/refs/heads/main/Terminal_POS_1_0_4_Mejorado.zip)
+
+Mismas funciones comerciales, con protecciones de respaldo y recuperación:
+
+- Copias con la misma marca de tiempo no se sobrescriben; seis simultáneas verificadas.
+- La retención conserva la copia recién creada aunque otras tengan fechas futuras.
+- Origen de solo lectura: no se recrea una base desaparecida ni se publican archivos sin tablas como respaldos válidos.
+- La copia termina con error ante bloqueos persistentes; errores de disco, permisos o verificación no se anuncian como éxito.
+- Se verifican estructura SQLite y referencias entre tablas; se controla la desaparición de archivos durante listado/descarga.
+
+**84 archivos de prueba aprobados**, 0 fallidos y 0 omitidos en Linux. Se restauró una base descargada en otra carpeta y se verificaron ventas, stock, deudas, caja y confirmaciones de reintento sin duplicados. Se probaron también fallos simulados y un bloqueo exclusivo real de SQLite.
+
+**Compatibilidad:** si se detectan referencias inválidas, el respaldo se rechaza y el POS puede no iniciar con esa base. No borra ni repara los registros. Probar primero con una copia y conservar la instalación anterior y un respaldo externo.
+
+Detalles e instrucciones: `MEJORAS_1_0_4.txt`, dentro del ZIP. El respaldo existente es de SQLite; fotos y tickets deben conservarse aparte. Incluye código y kit de compilación, **no un EXE precompilado**. La validación real en Windows y ante fallos físicos sigue pendiente.
+
+## Version anterior: 1.0.3
 
 [Descargar ZIP completo 1.0.3](https://github.com/gonzaloea1979/reconocimiento/raw/refs/heads/main/Terminal_POS_1_0_3_Mejorado.zip)
 
