@@ -39,7 +39,14 @@ jobs:
         run: python tests/run_all_tests.py
       - name: Compilar ejecutable
         working-directory: ${{ env.POS_DIR }}
-        run: python -m PyInstaller --noconfirm --clean --onedir --windowed --name TerminalPOS --paths . --add-data "app/templates;app/templates" --add-data "app/static;app/static" --collect-all cv2 --collect-data reportlab --collect-data PIL --collect-submodules flask --collect-submodules werkzeug --collect-submodules jinja2 --collect-submodules reportlab --hidden-import xlrd --hidden-import xlwt run.py
+        run: python -m PyInstaller --noconfirm --clean --onedir --windowed --name TerminalPOS --paths . --add-data "app/templates;app/templates" --add-data "app/static;app/static" --collect-all cv2 --collect-data reportlab --collect-data PIL --collect-submodules flask --collect-submodules werkzeug --collect-submodules jinja2 --collect-submodules reportlab --hidden-import app --hidden-import app.config --hidden-import app.db --hidden-import app.routes --hidden-import xlrd --hidden-import xlwt run.py
+      - name: Copiar recursos externos como el compilador oficial
+        working-directory: ${{ env.POS_DIR }}
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force 'dist/TerminalPOS/app' | Out-Null
+          Copy-Item 'app/templates' 'dist/TerminalPOS/app/templates' -Recurse -Force
+          Copy-Item 'app/static' 'dist/TerminalPOS/app/static' -Recurse -Force
       - name: Verificar arranque y PDF nativos
         working-directory: ${{ env.POS_DIR }}
         shell: pwsh
@@ -49,10 +56,12 @@ jobs:
           try {
             $session=New-Object Microsoft.PowerShell.Commands.WebRequestSession
             $ready=$false
-            for ($i=0; $i -lt 80; $i++) {
-              try { $null=Invoke-RestMethod 'http://127.0.0.1:5127/api/products' -WebSession $session; $ready=$true; break } catch { Start-Sleep -Milliseconds 250 }
+            for ($i=0; $i -lt 60; $i++) {
+              if (Test-Path '.\dist\TerminalPOS\logs\inicio_error.log') { Get-Content '.\dist\TerminalPOS\logs\inicio_error.log'; break }
+              if ($proc.HasExited) { break }
+              try { $null=Invoke-RestMethod 'http://127.0.0.1:5127/api/products' -WebSession $session -TimeoutSec 1; $ready=$true; break } catch { Start-Sleep -Milliseconds 250 }
             }
-            if (-not $ready) { throw 'El EXE no respondió por HTTP local' }
+            if (-not $ready) { Get-Content '.\dist\TerminalPOS\logs\*.log' -ErrorAction SilentlyContinue; throw 'El EXE no respondió por HTTP local' }
             $p=Invoke-RestMethod 'http://127.0.0.1:5127/api/products' -Method Post -ContentType 'application/json' -Body '{"name":"Prueba Windows","cost_without_tax":1,"stock":2}' -WebSession $session
             $body=@{items=@(@{product_id=$p.id;quantity=1})}|ConvertTo-Json -Depth 5
             $sale=Invoke-RestMethod 'http://127.0.0.1:5127/api/sales' -Method Post -ContentType 'application/json' -Body $body -WebSession $session
