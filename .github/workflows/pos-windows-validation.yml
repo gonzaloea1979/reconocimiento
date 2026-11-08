@@ -30,7 +30,7 @@ jobs:
           EXPECTED_SHA: ${{ inputs.sha256 }}
         run: |
           $zip = Join-Path $env:RUNNER_TEMP 'pos.zip'
-          Invoke-WebRequest 'https://raw.githubusercontent.com/gonzaloea1979/reconocimiento/63625f8bd212ce963c03d885f7123234eaadc00f/Terminal_POS_1_0_5_Corregido_v15.zip' -OutFile $zip
+          Invoke-WebRequest 'https://raw.githubusercontent.com/gonzaloea1979/reconocimiento/4f92648929c86500a005d5804ddc7c19a2f6e733/Terminal_POS_1_0_5_Corregido_v15.zip' -OutFile $zip
           if ((Get-FileHash $zip -Algorithm SHA256).Hash.ToLower() -ne $env:EXPECTED_SHA.ToLower()) { throw 'SHA256 no coincide' }
           $dest = Join-Path $env:RUNNER_TEMP "Terminal POS ñ apostrofe's (v15)"
           Expand-Archive $zip $dest
@@ -45,7 +45,7 @@ jobs:
         working-directory: ${{ env.POS_DIR }}
         run: python tests/windows_installation_checks.py
       - name: Compilar con BAT oficial y verificar EXE nativo
-        if: matrix.python == '3.12'
+        if: ${{ !cancelled() && matrix.python == '3.12' }}
         working-directory: ${{ env.POS_DIR }}
         run: python tests/windows_build_checks.py
       - name: Conservar diagnóstico de instalación y compilación
