@@ -3,78 +3,57 @@ on:
   workflow_dispatch:
     inputs:
       sha256:
-        description: SHA256 del ZIP v14 validado
+        description: SHA256 del ZIP v15 validado
         required: true
 permissions:
   contents: read
 jobs:
   validar:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
     runs-on: windows-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     env:
       PYTHONUTF8: "1"
     steps:
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
-          python-version: '3.12'
-      - uses: actions/setup-node@v4
+          python-version: ${{ matrix.python }}
+      - uses: actions/setup-node@v5
         with:
           node-version: '22'
-      - name: Descargar fuente verificada
+      - name: Descargar fuente verificada en ruta con caracteres especiales
         shell: pwsh
         env:
           EXPECTED_SHA: ${{ inputs.sha256 }}
         run: |
           $zip = Join-Path $env:RUNNER_TEMP 'pos.zip'
-          Invoke-WebRequest 'https://raw.githubusercontent.com/gonzaloea1979/reconocimiento/fa92569040a26950847265c0bdcbc8e9030db6d0/Terminal_POS_1_0_5_Corregido_v14.zip' -OutFile $zip
+          Invoke-WebRequest 'https://raw.githubusercontent.com/gonzaloea1979/reconocimiento/729eed24fbc5e415004db7ba30bd6633c13fbd9b/Terminal_POS_1_0_5_Corregido_v15.zip' -OutFile $zip
           if ((Get-FileHash $zip -Algorithm SHA256).Hash.ToLower() -ne $env:EXPECTED_SHA.ToLower()) { throw 'SHA256 no coincide' }
-          $dest = Join-Path $env:RUNNER_TEMP 'pos-source'
+          $dest = Join-Path $env:RUNNER_TEMP "Terminal POS ñ apostrofe's (v15)"
           Expand-Archive $zip $dest
           "POS_DIR=$dest\Terminal_POS_1_0" >> $env:GITHUB_ENV
       - name: Dependencias
         working-directory: ${{ env.POS_DIR }}
         run: python -m pip install -r requirements-build.txt
-      - name: Pruebas en Windows
+      - name: Pruebas completas incluidas interrupciones de procesos
         working-directory: ${{ env.POS_DIR }}
         run: python tests/run_all_tests.py
-      - name: Compilar ejecutable
+      - name: Instaladores BAT, permisos y junctions reales
         working-directory: ${{ env.POS_DIR }}
-        run: python -m PyInstaller --noconfirm --clean --onedir --windowed --name TerminalPOS --paths . --add-data "app/templates;app/templates" --add-data "app/static;app/static" --collect-all cv2 --collect-data reportlab --collect-data PIL --collect-submodules flask --collect-submodules werkzeug --collect-submodules jinja2 --collect-submodules reportlab --hidden-import app --hidden-import app.config --hidden-import app.db --hidden-import app.routes --hidden-import xlrd --hidden-import xlwt run.py
-      - name: Copiar recursos externos como el compilador oficial
+        run: python tests/windows_installation_checks.py
+      - name: Compilar con BAT oficial y verificar EXE nativo
+        if: matrix.python == '3.12'
         working-directory: ${{ env.POS_DIR }}
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Force 'dist/TerminalPOS/app' | Out-Null
-          Copy-Item 'app/templates' 'dist/TerminalPOS/app/templates' -Recurse -Force
-          Copy-Item 'app/static' 'dist/TerminalPOS/app/static' -Recurse -Force
-      - name: Verificar arranque y PDF nativos
-        working-directory: ${{ env.POS_DIR }}
-        shell: pwsh
-        run: |
-          $env:POS_PORT='5127'
-          $proc=Start-Process -FilePath '.\dist\TerminalPOS\TerminalPOS.exe' -PassThru
-          try {
-            $session=New-Object Microsoft.PowerShell.Commands.WebRequestSession
-            $ready=$false
-            for ($i=0; $i -lt 60; $i++) {
-              if (Test-Path '.\dist\TerminalPOS\logs\inicio_error.log') { Get-Content '.\dist\TerminalPOS\logs\inicio_error.log'; break }
-              if ($proc.HasExited) { break }
-              try { $null=Invoke-RestMethod 'http://127.0.0.1:5127/api/products' -WebSession $session -TimeoutSec 1; $ready=$true; break } catch { Start-Sleep -Milliseconds 250 }
-            }
-            if (-not $ready) { Get-Content '.\dist\TerminalPOS\logs\*.log' -ErrorAction SilentlyContinue; throw 'El EXE no respondió por HTTP local' }
-            $p=Invoke-RestMethod 'http://127.0.0.1:5127/api/products' -Method Post -ContentType 'application/json' -Body '{"name":"Prueba Windows","cost_without_tax":1,"stock":2}' -WebSession $session
-            $body=@{items=@(@{product_id=$p.id;quantity=1})}|ConvertTo-Json -Depth 5
-            $sale=Invoke-RestMethod 'http://127.0.0.1:5127/api/sales' -Method Post -ContentType 'application/json' -Body $body -WebSession $session
-            $pdf=Invoke-RestMethod "http://127.0.0.1:5127/api/sales/$($sale.sale_id)/ticket-pdf" -Method Post -ContentType 'application/json' -Body '{"print":false}' -WebSession $session
-            if (-not (Test-Path $pdf.path)) { throw 'No se generó el PDF' }
-          } finally {
-            Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
-          }
-      - name: Conservar diagnóstico de compilación y arranque
+        run: python tests/windows_build_checks.py
+      - name: Conservar diagnóstico de instalación y compilación
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
-          name: diagnostico-windows
+          name: diagnostico-windows-${{ matrix.python }}
           path: |
+            ${{ env.POS_DIR }}/logs/*
             ${{ env.POS_DIR }}/build/TerminalPOS/warn-TerminalPOS.txt
-            ${{ env.POS_DIR }}/dist/TerminalPOS/logs/*.log
+            ${{ env.POS_DIR }}/dist/TerminalPOS/logs/*
