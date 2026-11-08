@@ -11,6 +11,8 @@ jobs:
   validar:
     runs-on: windows-latest
     timeout-minutes: 25
+    env:
+      PYTHONUTF8: "1"
     steps:
       - uses: actions/setup-python@v5
         with:
@@ -24,7 +26,7 @@ jobs:
           EXPECTED_SHA: ${{ inputs.sha256 }}
         run: |
           $zip = Join-Path $env:RUNNER_TEMP 'pos.zip'
-          Invoke-WebRequest 'https://raw.githubusercontent.com/gonzaloea1979/reconocimiento/main/Terminal_POS_1_0_5_Corregido_v13.zip' -OutFile $zip
+          Invoke-WebRequest 'https://raw.githubusercontent.com/gonzaloea1979/reconocimiento/591f53b30441bf4a756d5e724e5348ec9d3c7729/Terminal_POS_1_0_5_Corregido_v13.zip' -OutFile $zip
           if ((Get-FileHash $zip -Algorithm SHA256).Hash.ToLower() -ne $env:EXPECTED_SHA.ToLower()) { throw 'SHA256 no coincide' }
           $dest = Join-Path $env:RUNNER_TEMP 'pos-source'
           Expand-Archive $zip $dest
