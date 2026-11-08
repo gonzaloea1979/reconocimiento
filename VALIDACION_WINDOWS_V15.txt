@@ -1,0 +1,32 @@
+VALIDACION TERMINAL POS V15 - 2026-11-08 UTC
+
+Fuente verificada:
+https://raw.githubusercontent.com/gonzaloea1979/reconocimiento/ce7698e49631eaef4874e6f3b74da5c3465d1745/Terminal_POS_1_0_5_Corregido_v15.zip
+SHA256: 3dae4600fd6f5abe0cddcff47dba81c6cadeadfd9070d942f9017213e0c38478
+
+Linux/Python 3.12: 106 archivos de prueba aprobados, cero omisiones.
+Windows/Python 3.11 y Python 3.12: 106 archivos aprobados en CADA intérprete,
+cero omisiones. Incluye terminación real de procesos durante venta, importación,
+respaldo y preparación del entorno, integridad y recuperación de los datos.
+Ejecución y registros:
+https://github.com/gonzaloea1979/reconocimiento/actions/runs/42504058223
+
+BAT reales de instalación y arranque: aprobados en ambos trabajos Windows.
+Instalación desde cero, repetición sin reinstalación, .venv correcto, conservación
+de datos y detención ante entorno incompleto: aprobados.
+Rutas con espacios, ñ, apóstrofes y paréntesis, desde otra carpeta: aprobadas.
+Junctions reales rechazadas sin modificar el destino: aprobado.
+Denegación ACL real de escritura: mensaje correcto, sin iniciar ni elevar permisos.
+Prueba de arranque BAT: run.py instrumental solamente en una copia temporal;
+se verifican intérprete y carpeta. El EXE siguiente sí ejecuta el programa real.
+
+Windows 3.12: compilar_exe.bat OFICIAL ejecutado en ruta con caracteres especiales.
+Preparación del entorno de compilación, PyInstaller, copia de recursos,
+verificación y empaquetado del EXE: aprobados.
+EXE real: arranque por HTTP local, producto, venta, PDF y respaldo aprobados.
+
+Todo se ejecutó con datos sintéticos en carpetas temporales.
+Los cierres de procesos no reproducen un corte eléctrico físico ni fallos de disco.
+La impresión física no fue comprobada.
+ZIP entregado: código fuente; no contiene EXE, bases comerciales ni entornos.
+Se mantiene Python mínimo 3.11; recomendado 3.12 de 64 bits.
