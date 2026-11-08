@@ -1,0 +1,23 @@
+VALIDACION TERMINAL POS V14 - 2026-11-08 UTC
+
+Fuente verificada:
+https://raw.githubusercontent.com/gonzaloea1979/reconocimiento/fa92569040a26950847265c0bdcbc8e9030db6d0/Terminal_POS_1_0_5_Corregido_v14.zip
+SHA256: 7273b6c923a27ed44c92ff9974a93ff8641128a8ab56b7ab44b6c05424acdc03
+
+Linux / Python 3.12: 104 archivos de prueba aprobados, cero omisiones.
+Windows nativo / Python 3.12: 104 archivos de prueba aprobados, cero omisiones.
+Instalacion de requirements-build.txt: aprobada.
+Compilacion PyInstaller con dependencias actualizadas: aprobada.
+Arranque real del EXE por HTTP local: aprobado.
+Alta de producto, venta y generacion de PDF desde el EXE: aprobadas.
+Ejecucion y registros:
+https://github.com/gonzaloea1979/reconocimiento/actions/runs/42501684826
+
+Dependencias: 25 pares paquete/version auditados en PyPI, incluyendo ramas
+por plataforma/Python. Pillow actualizado de 12.3.0 a 13.0.0; consulta final
+sin avisos activos publicados ni errores. Evidencia y alcance en el ZIP.
+Minimo requerido: Python 3.11. Recomendado: Python 3.12 de 64 bits.
+Wheels Windows x64/Python 3.11 resueltos y descargados; no se ejecuto 3.11.
+
+ZIP de codigo fuente, no incluye EXE ni datos comerciales.
+Validacion con datos sinteticos. Impresion fisica no comprobada.
