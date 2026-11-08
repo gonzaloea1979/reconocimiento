@@ -1,0 +1,33 @@
+TERMINAL POS V13 - VALIDACION WINDOWS APROBADA
+
+Fuente comprobada:
+https://raw.githubusercontent.com/gonzaloea1979/reconocimiento/3fbadc553118ed402642695d4a4f4bc136a0086e/Terminal_POS_1_0_5_Corregido_v13.zip
+SHA256: 489b74f3913d4e8a2a2ae875b97afeb3f2f86faff916d32224110847d13c4cbe
+
+Ejecución final:
+https://github.com/gonzaloea1979/reconocimiento/actions/runs/42499941302
+Estado: completed / success.
+Runner: windows-latest, Python 3.12.10, Node.js 22.
+
+Resultados:
+- Dependencias exactas de requirements-build.txt instaladas.
+- 103 pruebas aprobadas, sin omisiones.
+- Ejecutable Windows compilado con PyInstaller.
+- Módulos ocultos y recursos externos incluidos como en el compilador oficial.
+- Ejecutable iniciado y comprobado por HTTP local.
+- Alta de un producto y venta de prueba por API nativa.
+- Ticket PDF generado y existencia del archivo comprobada.
+
+La primera ejecución reveló dos problemas en las pruebas: cierre de una descarga
+antes de borrar temporales y comparación de rutas 8.3/resueltas. Se corrigieron
+sin omitir ni desactivar esas comprobaciones. La receta inicial de CI también
+se alineó con los módulos ocultos y recursos del compilador oficial.
+
+La versión final también aprobó las 103 pruebas en Linux y las comprobaciones
+de formularios/importación/sesiones en Chromium con datos temporales.
+Los datos usados en CI son sintéticos; no se utilizaron bases comerciales.
+
+ALCANCE
+La descarga de fuente no incluye el EXE compilado en CI.
+No se probó una impresora física ni sus controladores en un equipo de uso real.
+La generación del PDF no equivale a confirmar impresión física.
